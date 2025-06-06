@@ -7,11 +7,9 @@ import { CourseDetailPageRoutingModule } from './course-detail-routing.module';
 
 @NgModule({
   imports: [
-    // Because CourseDetailPage is standalone, we import it directly:
-    CourseDetailPage,
-    IonicModule,                // so <ion-header>, <ion-content>, etc. work
-    CourseDetailPageRoutingModule, // so the router can wire up “path: '' → CourseDetailPage”
-  ],
-  // NO declarations: [CourseDetailPage] – remove that entirely
+    CourseDetailPage,             // Standalone component
+    IonicModule,                  // Enables <ion-*> components
+    CourseDetailPageRoutingModule // Child‐route for "/course-detail/:id"
+  ]
 })
 export class CourseDetailPageModule {}

@@ -1,12 +1,10 @@
+// src/app/services/course.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Course } from '../models/course.model';
 
-/**
- * The shape of the JSON we expect when we fetch a paged list of courses.
- * Adjust “data” and “hasNext” to match whatever your backend actually returns.
- */
 export interface CourseListResponse {
   data: Course[];
   hasNext: boolean;
@@ -16,18 +14,13 @@ export interface CourseListResponse {
   providedIn: 'root'
 })
 export class CourseService {
-  /**
-   * Change this base URL to match your Spring Boot (or whatever) endpoint.
-   * For example, if your Spring Boot endpoint is “/api/courses?page=...&size=...”,
-   * then baseUrl might be “http://localhost:8080/api/courses”.
-   */
-  private baseUrl = 'http://localhost:8080/api/courses';
+  // TODO: Replace with your actual backend URL
+  private baseUrl = 'https://api.example.com/courses';
 
   constructor(private http: HttpClient) {}
 
   /**
-   * Fetches a paged list of courses from the server.
-   * The server is expected to return { data: Course[], hasNext: boolean }.
+   * Fetch a paged list of courses.
    */
   filterCourses(page: number, size: number): Observable<CourseListResponse> {
     return this.http.get<CourseListResponse>(
@@ -36,8 +29,7 @@ export class CourseService {
   }
 
   /**
-   * Fetches a single Course by its ID.
-   * Adjust path if your endpoint is different (e.g. “/api/courses/{id}”).
+   * Fetch a single course by its ID.
    */
   getCourseById(id: number): Observable<Course> {
     return this.http.get<Course>(`${this.baseUrl}/${id}`);

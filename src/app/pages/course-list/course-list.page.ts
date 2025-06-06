@@ -10,19 +10,19 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { CourseService } from '../../services/course.service';
+import { CourseService, CourseListResponse } from '../../services/course.service';
 import { Course } from '../../models/course.model';
 
 @Component({
   selector: 'app-course-list',
   standalone: true,
   imports: [
-    CommonModule,    // for *ngIf, *ngFor
-    FormsModule,     // for ngModel (if you add a search bar later)
-    IonicModule      // makes <ion-*> components available
+    CommonModule, // Enables *ngIf, *ngFor
+    FormsModule,  // Enables ngModel
+    IonicModule   // Enables <ion-*> components
   ],
   templateUrl: './course-list.page.html',
-  styleUrls: ['./course-list.page.scss'],
+  styleUrls: ['./course-list.page.scss']
 })
 export class CourseListPage implements OnInit {
   public courses: Course[] = [];
@@ -32,8 +32,8 @@ export class CourseListPage implements OnInit {
   public isLoading = false;
 
   constructor(
-    private courseService: CourseService,
     private router: Router,
+    private courseService: CourseService,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController
   ) {}
@@ -44,42 +44,37 @@ export class CourseListPage implements OnInit {
 
   private async loadCourses(event?: any) {
     this.isLoading = true;
-
     const loading = await this.loadingCtrl.create({
-      message: 'Loading courses…',
+      message: 'Loading courses…'
     });
     await loading.present();
 
-    // Adjust this call to match your actual CourseService signature.
-    // The example below assumes filterCourses returns { data, hasNext }.
-    this.courseService
-      .filterCourses(this.pageNumber, this.pageSize)
-      .subscribe({
-        next: (res) => {
-          this.courses.push(...res.data);
-          this.hasNext = res.hasNext;
-          this.isLoading = false;
-          loading.dismiss();
+    this.courseService.filterCourses(this.pageNumber, this.pageSize).subscribe({
+      next: async (res: CourseListResponse) => {
+        this.courses = this.courses.concat(res.data);
+        this.hasNext = res.hasNext;
+        this.isLoading = false;
+        loading.dismiss();
 
-          if (event) {
-            event.target.complete();
-          }
-        },
-        error: async (err) => {
-          console.error('Error fetching courses:', err);
-          this.isLoading = false;
-          loading.dismiss();
-          if (event) {
-            event.target.complete();
-          }
-          const alert = await this.alertCtrl.create({
-            header: 'Error',
-            message: 'Could not load courses. Please try again.',
-            buttons: ['OK'],
-          });
-          await alert.present();
-        },
-      });
+        if (event) {
+          event.target.complete();
+        }
+      },
+      error: async (err) => {
+        console.error('Error fetching courses:', err);
+        this.isLoading = false;
+        loading.dismiss();
+        if (event) {
+          event.target.complete();
+        }
+        const alert = await this.alertCtrl.create({
+          header: 'Error',
+          message: 'Could not load courses. Please try again.',
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+    });
   }
 
   public loadMore(event: any) {

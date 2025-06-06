@@ -7,12 +7,12 @@ import { CourseListPage } from './course-list.page';
 const routes: Routes = [
   {
     path: '',
-    component: CourseListPage,
-  },
+    component: CourseListPage
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class CourseListPageRoutingModule {}

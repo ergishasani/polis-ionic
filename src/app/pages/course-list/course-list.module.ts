@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { CourseListPageRoutingModule } from './course-list-routing.module';
-import { CourseListPage } from './course-list.page'; // ← Standalone component
+import { CourseListPage } from './course-list.page'; // Standalone component
 
 @NgModule({
   imports: [
@@ -14,7 +14,7 @@ import { CourseListPage } from './course-list.page'; // ← Standalone component
     FormsModule,
     IonicModule,
     CourseListPageRoutingModule,
-    CourseListPage,      // ← Import the standalone component here
-  ],
+    CourseListPage  // Import the standalone CourseListPage
+  ]
 })
 export class CourseListPageModule {}

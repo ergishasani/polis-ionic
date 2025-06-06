@@ -16,20 +16,17 @@ import { CourseService } from '../../services/course.service';
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-
-  // ← Must import these modules so that <ion-*> tags and directives like *ngIf, *ngFor, [(ngModel)] work:
   imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule
+    CommonModule, // For *ngIf, *ngFor
+    FormsModule,  // For ngModel if needed
+    IonicModule   // For <ion-*> tags
   ],
-
   templateUrl: './course-detail.page.html',
   styleUrls: ['./course-detail.page.scss']
 })
 export class CourseDetailPage implements OnInit {
-  public courseId!: number;
   public course: Course | null = null;
+  public isNew = false;
   public isLoading = false;
 
   constructor(
@@ -40,21 +37,27 @@ export class CourseDetailPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Grab the “id” from the URL
-    this.courseId = Number(this.route.snapshot.paramMap.get('id'));
-    this.loadCourse();
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam === 'new') {
+      // New course: set up empty object
+      this.isNew = true;
+      this.course = { id: 0, code: '', title: '' };
+    } else {
+      // Existing course: parse ID and load
+      const id = Number(idParam);
+      this.loadCourse(id);
+    }
   }
 
-  private async loadCourse() {
+  private async loadCourse(id: number) {
     this.isLoading = true;
-
     const loading = await this.loadingCtrl.create({
       message: 'Loading course details…'
     });
     await loading.present();
 
-    this.courseService.getCourseById(this.courseId).subscribe({
-      next: (res) => {
+    this.courseService.getCourseById(id).subscribe({
+      next: async (res: Course) => {
         this.course = res;
         this.isLoading = false;
         loading.dismiss();
@@ -62,8 +65,7 @@ export class CourseDetailPage implements OnInit {
       error: async (err) => {
         console.error('Error fetching course detail:', err);
         this.isLoading = false;
-        await loading.dismiss();
-
+        loading.dismiss();
         const alert = await this.alertCtrl.create({
           header: 'Error',
           message: 'Could not load course details. Please try again.',
@@ -72,5 +74,15 @@ export class CourseDetailPage implements OnInit {
         await alert.present();
       }
     });
+  }
+
+  public saveCourse() {
+    // TODO: implement create/update logic
+    // Example:
+    // if (this.isNew) {
+    //   this.courseService.createCourse(this.course).subscribe(...)
+    // } else {
+    //   this.courseService.updateCourse(this.course).subscribe(...)
+    // }
   }
 }
