@@ -1,0 +1,7 @@
+{
+  "name": "polis-mobile",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
