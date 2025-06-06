@@ -1,0 +1,41 @@
+<!-- src/app/pages/teacher-list/teacher-list.page.html -->
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Teachers</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addTeacher()">Add</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="onSearchChange()" placeholder="Search teachers">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="teachers.length; else noTeachers">
+    <ion-item *ngFor="let t of teachers">
+      <ion-label (click)="editTeacher(t)">
+        <h2>{{ t.firstName }} {{ t.lastName }}</h2>
+        <p>{{ t.title }}</p>
+      </ion-label>
+      <ion-button fill="clear" color="danger" slot="end" (click)="deleteTeacher(t)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)" *ngIf="hasNext">
+      <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-list>
+
+  <ng-template #noTeachers>
+    <ion-card *ngIf="!isLoading">
+      <ion-card-content>No teachers found.</ion-card-content>
+    </ion-card>
+  </ng-template>
+
+  <ion-spinner *ngIf="isLoading" name="crescent" style="display: block; margin: auto; margin-top: 20px;">
+  </ion-spinner>
+</ion-content>
