@@ -1,57 +1,21 @@
-<!-- src/app/pages/course-detail/course-detail.page.html -->
-
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/course-list"></ion-back-button>
     </ion-buttons>
-    <ion-title>Course Details</ion-title>
+    <ion-title>Course Detail</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<!-- Only render when “course” is non-null -->
 <ion-content *ngIf="course">
   <ion-card>
     <ion-card-header>
       <ion-card-title>{{ course.title }}</ion-card-title>
-      <ion-card-subtitle>{{ course.code }}</ion-card-subtitle>
+      <ion-card-subtitle>Code: {{ course.code }}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <p><strong>Description:</strong> {{ course.description }}</p>
       <p><strong>Year:</strong> {{ course.year }}</p>
-
-      <!-- Teacher section -->
-      <ng-container *ngIf="course.teacher">
-        <p>
-          <strong>Teacher:</strong>
-          {{ course.teacher.firstName }} {{ course.teacher.lastName }}
-        </p>
-      </ng-container>
-      <ng-container *ngIf="!course.teacher">
-        <p><em>No teacher assigned</em></p>
-      </ng-container>
-
-      <!-- Enrolled students: only if length > 0 -->
-      <div *ngIf="(course.students?.length ?? 0) > 0">
-        <p><strong>Enrolled Students:</strong></p>
-        <ion-list>
-          <ion-item *ngFor="let s of course.students">
-            {{ s.firstName }} {{ s.lastName }} ({{ s.serialNumber }})
-          </ion-item>
-        </ion-list>
-      </div>
-
-      <!-- No students: only if array exists and length === 0 -->
-      <div *ngIf="course.students?.length === 0">
-        <p><em>No students enrolled</em></p>
-      </div>
+      <p>{{ course.description }}</p>
     </ion-card-content>
   </ion-card>
-</ion-content>
-
-<!-- If “course” is null/undefined and not loading, show message -->
-<ion-content *ngIf="!course && !isLoading">
-  <ion-text color="medium">
-    <p class="ion-padding">Course not found or invalid ID.</p>
-  </ion-text>
 </ion-content>

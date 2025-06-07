@@ -1,5 +1,8 @@
+<!-- src/app/app.component.html -->
+
 <ion-app>
-  <ion-menu side="start" menuId="first">
+  <!-- 1) Define the side menu and give it a `contentId="main-content"` -->
+  <ion-menu side="start" menuId="first" contentId="main-content">
     <ion-header>
       <ion-toolbar color="primary">
         <ion-title>Menu</ion-title>
@@ -7,12 +10,13 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item routerLink="/course-list" routerDirection="root">Courses</ion-item>
-        <ion-item routerLink="/teacher-list" routerDirection="root">Teachers</ion-item>
-        <ion-item routerLink="/student-list" routerDirection="root">Students</ion-item>
+        <ion-item routerLink="/course-list">Courses</ion-item>
+        <ion-item routerLink="/course-detail/1">Sample Detail</ion-item>
+        <!-- add other menu items here -->
       </ion-list>
     </ion-content>
   </ion-menu>
 
-  <ion-router-outlet main></ion-router-outlet>
+  <!-- 2) Your main content area must have the same id="main-content" -->
+  <ion-router-outlet id="main-content"></ion-router-outlet>
 </ion-app>

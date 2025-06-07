@@ -1,92 +1,42 @@
-// src/app/pages/course-list/course-list.page.ts
-
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import {
-  IonicModule,
-  LoadingController,
-  AlertController
-} from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
 
-import { CourseService, CourseListResponse } from '../../services/course.service';
-import { Course } from '../../models/course.model';
+import { CourseService, Course } from '../../services/course.service';
 
 @Component({
   selector: 'app-course-list',
-  standalone: true,
-  imports: [
-    CommonModule, // Enables *ngIf, *ngFor
-    FormsModule,  // Enables ngModel
-    IonicModule   // Enables <ion-*> components
-  ],
   templateUrl: './course-list.page.html',
-  styleUrls: ['./course-list.page.scss']
+  styleUrls: ['./course-list.page.scss'],
+  standalone: true,
+  imports: [IonicModule, CommonModule, RouterModule]
 })
 export class CourseListPage implements OnInit {
-  public courses: Course[] = [];
-  public pageNumber = 0;
-  public pageSize = 20;
-  public hasNext = false;
-  public isLoading = false;
+  courses: Course[] = [];
+  loading = false;
+  hasNext = false;
+  page = 0;
+  size = 20;
 
-  constructor(
-    private router: Router,
-    private courseService: CourseService,
-    private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
-  ) {}
+  constructor(private courseService: CourseService) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadCourses();
   }
 
-  private async loadCourses(event?: any) {
-    this.isLoading = true;
-    const loading = await this.loadingCtrl.create({
-      message: 'Loading courses…'
-    });
-    await loading.present();
-
-    this.courseService.filterCourses(this.pageNumber, this.pageSize).subscribe({
-      next: async (res: CourseListResponse) => {
-        this.courses = this.courses.concat(res.data);
-        this.hasNext = res.hasNext;
-        this.isLoading = false;
-        loading.dismiss();
-
-        if (event) {
-          event.target.complete();
-        }
+  loadCourses(): void {
+    this.loading = true;
+    this.courseService.filterCourses(this.page, this.size).subscribe({
+      next: resp => {
+        this.courses = resp.data;
+        this.hasNext = resp.hasNext;
+        this.loading = false;
       },
-      error: async (err) => {
-        console.error('Error fetching courses:', err);
-        this.isLoading = false;
-        loading.dismiss();
-        if (event) {
-          event.target.complete();
-        }
-        const alert = await this.alertCtrl.create({
-          header: 'Error',
-          message: 'Could not load courses. Please try again.',
-          buttons: ['OK']
-        });
-        await alert.present();
+      error: err => {
+        console.error('Error fetching courses', err);
+        this.loading = false;
       }
     });
-  }
-
-  public loadMore(event: any) {
-    this.pageNumber++;
-    this.loadCourses(event);
-  }
-
-  public viewDetail(course: Course) {
-    this.router.navigate(['/course-detail', course.id]);
-  }
-
-  public addCourse() {
-    this.router.navigate(['/course-detail', 'new']);
   }
 }

@@ -1,5 +1,3 @@
-// src/app/pages/course-detail/course-detail-routing.module.ts
-
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CourseDetailPage } from './course-detail.page';
@@ -7,12 +5,12 @@ import { CourseDetailPage } from './course-detail.page';
 const routes: Routes = [
   {
     path: '',
-    component: CourseDetailPage
-  }
+    component: CourseDetailPage,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class CourseDetailPageRoutingModule {}

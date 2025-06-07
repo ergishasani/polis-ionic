@@ -1,12 +1,23 @@
 // src/app/services/course.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Course } from '../models/course.model';
 
+// Define a TypeScript interface for a single Course:
+export interface Course {
+  id: number;
+  code: string;
+  title: string;
+  description: string;
+  year: number;
+  teacher: any | null;
+  students: any[] | null;
+}
+
+// Define the “list” response shape:
 export interface CourseListResponse {
-  data: Course[];
+  status: any[];          // (you may not care about this right now)
+  data: Course[];         // <- THIS must be an array
   hasNext: boolean;
 }
 
@@ -14,24 +25,22 @@ export interface CourseListResponse {
   providedIn: 'root'
 })
 export class CourseService {
-  // TODO: Replace with your actual backend URL
-  private baseUrl = 'https://api.example.com/courses';
+  // NOTE: point to the “getAllCourses” (list) endpoint, not “upsertCourse”
+  private baseUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Fetch a paged list of courses.
-   */
+  // When you call filterCourses(0, 20), you expect resp.data to be Course[]
   filterCourses(page: number, size: number): Observable<CourseListResponse> {
     return this.http.get<CourseListResponse>(
-      `${this.baseUrl}?page=${page}&size=${size}`
+      `${this.baseUrl}/getAllCourses?page=${page}&size=${size}`
     );
   }
 
-  /**
-   * Fetch a single course by its ID.
-   */
-  getCourseById(id: number): Observable<Course> {
-    return this.http.get<Course>(`${this.baseUrl}/${id}`);
+  // If you still want to fetch one single course by ID:
+  getCourseById(id: number): Observable<{ status: any[]; data: Course }> {
+    return this.http.get<{ status: any[]; data: Course }>(
+      `${this.baseUrl}/getCourse/${id}`
+    );
   }
 }

@@ -1,49 +1,23 @@
-<!-- src/app/pages/course-list/course-list.page.html -->
-
 <ion-header>
   <ion-toolbar>
-    <ion-title>All Courses</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="addCourse()">Add</ion-button>
-    </ion-buttons>
+    <ion-title>Courses</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-list *ngIf="courses.length; else noCourses">
+  <div *ngIf="loading" class="ion-text-center" style="margin-top: 2rem;">
+    <ion-spinner name="dots"></ion-spinner>
+  </div>
+
+  <ion-list *ngIf="!loading && courses.length > 0">
     <ion-item
-      *ngFor="let c of courses"
-      (click)="viewDetail(c)"
-      button
-      detail
-    >
-      <ion-label>
-        <h2>{{ c.title }}</h2>
-        <p>{{ c.code }} – {{ c.year }}</p>
-      </ion-label>
+      *ngFor="let course of courses"
+      [routerLink]="['/course-detail', course.id]">
+      {{ course.title }}
     </ion-item>
   </ion-list>
 
-  <ng-template #noCourses>
-    <ion-card *ngIf="!isLoading">
-      <ion-card-content>No courses found.</ion-card-content>
-    </ion-card>
-  </ng-template>
-
-  <ion-spinner
-    *ngIf="isLoading"
-    name="crescent"
-    style="display: block; margin: auto; margin-top: 20px;"
-  ></ion-spinner>
-
-  <ion-infinite-scroll
-    threshold="100px"
-    (ionInfinite)="loadMore($event)"
-    *ngIf="hasNext"
-  >
-    <ion-infinite-scroll-content
-      loadingSpinner="crescent"
-      loadingText="Loading more..."
-    ></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  <div *ngIf="!loading && courses.length === 0" class="ion-text-center" style="margin-top: 2rem;">
+    No courses found.
+  </div>
 </ion-content>
