@@ -1,47 +1,56 @@
-// src/app/services/course.service.ts
+// src/app/services/student.service.ts
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Course } from '../models/course.model';
+import { environment } from '../../environments/environment';
+import { StudentDto, RespSingle, RespSlice } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CourseService {
-  private baseUrl = 'http://localhost:8080'; // your Spring Boot base URL
+export class StudentService {
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Fetch a slice or list of courses (e.g. for CourseList). Optional.
-   * For detail page, we only need getCourseById().
-   */
-  // getCourses(page: number, size: number): Observable<Course[]> {
-  //   return this.http.post<Course[]>(
-  //     `${this.baseUrl}/filterCourses`,
-  //     { filter: '', pagination: { pageNumber: page, pageSize: size } }
-  //   );
-  // }
-
-  /**
-   * GET a single course by its ID. Adjust path if your backend uses /getCourse.
-   */
-  getCourseById(id: number): Observable<Course> {
-    // We assume your Spring endpoint is POST /getCourse with a JSON body { "id": <number> }
-    // If you prefer GET, adjust server side accordingly.
-    return this.http.post<Course>(`${this.baseUrl}/getCourse`, {
-      id: id
-    });
+  upsertStudent(student: StudentDto): Observable<RespSingle<StudentDto>> {
+    return this.http.post<RespSingle<StudentDto>>(
+      `${this.baseUrl}/upsertStudent`,
+      student
+    );
   }
 
-  /**
-   * (Optional) Update or create a course. Not used on this detail page example.
-   */
-  // upsertCourse(course: Course): Observable<Course> {
-  //   return this.http.post<Course>(`${this.baseUrl}/upsertCourse`, course);
-  // }
+  filterStudents(
+    filterStr: string,
+    pageNumber = 0,
+    pageSize = 20
+  ): Observable<RespSlice<StudentDto>> {
+    const body = {
+      filter: filterStr,
+      pagination: {
+        pageNumber,
+        pageSize
+      }
+    };
+    return this.http.post<RespSlice<StudentDto>>(
+      `${this.baseUrl}/filterStudents`,
+      body
+    );
+  }
 
-  // Add other methods (deleteCourse, associateTeacher, etc.) as needed.
+  getStudent(id: number): Observable<RespSingle<StudentDto>> {
+    return this.http.post<RespSingle<StudentDto>>(
+      `${this.baseUrl}/getStudent`,
+      { id }
+    );
+  }
+
+  deleteStudent(id: number): Observable<RespSingle<null>> {
+    return this.http.post<RespSingle<null>>(
+      `${this.baseUrl}/deleteStudent`,
+      { id }
+    );
+  }
 }
