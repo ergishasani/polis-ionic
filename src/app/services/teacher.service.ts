@@ -1,60 +1,49 @@
 // src/app/services/teacher.service.ts
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import {
-  TeacherDto,
-  RespSingle,
-  RespSlice,
-  ServerStatus
-} from '../models/models';
+import { catchError } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: 'root'
-})
+import { TeacherDto, RespSingle, RespSlice } from '../models/models';
+
+@Injectable({ providedIn: 'root' })
 export class TeacherService {
-  private baseUrl = environment.apiBaseUrl;
+  private baseUrl = 'http://localhost:8080/api/teachers';
 
   constructor(private http: HttpClient) {}
 
-  upsertTeacher(teacher: TeacherDto): Observable<RespSingle<TeacherDto>> {
-    return this.http.post<RespSingle<TeacherDto>>(
-      `${this.baseUrl}/upsertTeacher`,
+  filterTeachers(
+    page: number,
+    size: number,
+    filter: string = ''
+  ): Observable<RespSlice<TeacherDto>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('filter', filter);
+
+    return this.http
+      .get<RespSlice<TeacherDto>>(this.baseUrl, { params })
+      .pipe(catchError(err => { throw err; }));
+  }
+
+  getTeacherById(id: number): Observable<RespSingle<TeacherDto>> {
+    return this.http.get<RespSingle<TeacherDto>>(`${this.baseUrl}/${id}`);
+  }
+
+  createTeacher(teacher: TeacherDto): Observable<RespSingle<TeacherDto>> {
+    return this.http.post<RespSingle<TeacherDto>>(this.baseUrl, teacher);
+  }
+
+  updateTeacher(teacher: TeacherDto): Observable<RespSingle<TeacherDto>> {
+    return this.http.put<RespSingle<TeacherDto>>(
+      `${this.baseUrl}/${teacher.id}`,
       teacher
     );
   }
 
-  filterTeachers(
-    filterStr: string,
-    pageNumber = 0,
-    pageSize = 20
-  ): Observable<RespSlice<TeacherDto>> {
-    const body = {
-      filter: filterStr,
-      pagination: {
-        pageNumber,
-        pageSize
-      }
-    };
-    return this.http.post<RespSlice<TeacherDto>>(
-      `${this.baseUrl}/filterTeachers`,
-      body
-    );
-  }
-
-  getTeacher(id: number): Observable<RespSingle<TeacherDto>> {
-    return this.http.post<RespSingle<TeacherDto>>(
-      `${this.baseUrl}/getTeacher`,
-      { id }
-    );
-  }
-
-  deleteTeacher(id: number): Observable<RespSingle<null>> {
-    return this.http.post<RespSingle<null>>(
-      `${this.baseUrl}/deleteTeacher`,
-      { id }
-    );
+  deleteTeacher(id: number): Observable<RespSingle<void>> {
+    return this.http.delete<RespSingle<void>>(`${this.baseUrl}/${id}`);
   }
 }

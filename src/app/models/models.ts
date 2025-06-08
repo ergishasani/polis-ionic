@@ -17,7 +17,7 @@ export interface StudentDto {
 }
 
 export interface CourseDto {
-  id?: number;            // optional on create
+  id?: number;
   code: string;
   title: string;
   description: string;
@@ -26,30 +26,17 @@ export interface CourseDto {
   students?: StudentDto[];
 }
 
-// Server‐side “ServerStatus” object:
-export interface ServerStatus {
-  code: string;      // e.g. "COURSE_NOT_FOUND"
-  severity: string;
-  message: string;
-  action: string;
-  helpReference: string;
-  traceId: string;
-}
-
-// Wrapper for single‐object responses:
 export interface RespSingle<T> {
-  status: ServerStatus[];
-  data: T | null;
+  data: T;
+  errorContext: any[];
 }
 
-// Wrapper for paged “Slice” responses:
 export interface RespSlice<T> {
-  status: ServerStatus[];
-  slice: {
+  dataSlice: {
     content: T[];
     pageable: any;
-    last: boolean;
     first: boolean;
+    last: boolean;
     number: number;
     size: number;
     numberOfElements: number;
@@ -57,4 +44,5 @@ export interface RespSlice<T> {
     hasNext: boolean;
     hasPrevious: boolean;
   };
+  errorContext: any[];
 }

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-
+import { CourseDto, RespSingle, RespSlice } from '../models/models';
 import { TeacherService } from './teacher.service';
 
 describe('TeacherService', () => {

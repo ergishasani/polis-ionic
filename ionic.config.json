@@ -1,7 +1,11 @@
 {
-  "name": "polis-mobile",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
+  "name": "Project name: Polis Ionic App",
+  "integrations": {},
+  "type": "angular",
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://localhost:8080/api"
+    }
+  ]
 }

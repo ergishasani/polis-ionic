@@ -1,21 +1,20 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/course-list"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Course Detail</ion-title>
-  </ion-toolbar>
-</ion-header>
+<!-- src/app/pages/course-detail/course-detail.page.html -->
 
-<ion-content *ngIf="course">
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>{{ course.title }}</ion-card-title>
-      <ion-card-subtitle>Code: {{ course.code }}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Year:</strong> {{ course.year }}</p>
-      <p>{{ course.description }}</p>
-    </ion-card-content>
-  </ion-card>
-</ion-content>
+<ng-container *ngIf="course">
+  <!-- … your card markup … -->
+
+  <!-- Instead of `course.students?.length` use an explicit null check: -->
+  <ng-container *ngIf="course.students && course.students.length > 0; else noStudents">
+    <ion-list>
+      <ion-list-header>
+        Students Enrolled ({{ course.students.length }})
+      </ion-list-header>
+      <ion-item *ngFor="let s of course.students">
+        {{ s.firstName }} {{ s.lastName }}
+      </ion-item>
+    </ion-list>
+  </ng-container>
+  <ng-template #noStudents>
+    <div class="ion-text-center ion-padding">No students enrolled.</div>
+  </ng-template>
+</ng-container>

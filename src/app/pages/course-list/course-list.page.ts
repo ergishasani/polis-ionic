@@ -1,10 +1,10 @@
-// src/app/pages/course-list/course-list.page.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule }       from '@angular/common';
-import { IonicModule }        from '@ionic/angular';
-import { RouterModule }       from '@angular/router';
-
-import { CourseService, Course } from '../../services/course.service';
+import { NavController }     from '@ionic/angular';
+import { IonicModule }       from '@ionic/angular';
+import { CommonModule }      from '@angular/common';
+import { RouterModule }      from '@angular/router';
+import { CourseService }     from '../../services/course.service';
+import { CourseDto }         from '../../models/models';
 
 @Component({
   selector:    'app-course-list',
@@ -14,31 +14,44 @@ import { CourseService, Course } from '../../services/course.service';
   imports:     [IonicModule, CommonModule, RouterModule],
 })
 export class CourseListPage implements OnInit {
-  courses: Course[] = [];    // always defined
-  loading = true;            // start true to show spinner
+  courses: CourseDto[] = [];
   page    = 0;
   size    = 20;
+  filter  = '';
+  loading = true;
 
-  constructor(private courseService: CourseService) {}
+  constructor(
+    private courseService: CourseService,
+    private nav: NavController
+  ) {}
 
-  ngOnInit(): void {
-    console.log('CourseListPage initialized');
-    this.loadCourses();
+  ngOnInit() {
+    this.load();
   }
 
-  loadCourses(): void {
-    this.courseService.filterCourses(this.page, this.size).subscribe({
-      next: resp => {
-        console.log('got courses response:', resp);              // full payload
-        console.log('  resp.data array:', resp.data);             // should be Course[]
+  private load() {
+    this.loading = true;
+    this.courseService
+      .filterCourses(this.page, this.size, this.filter)
+      .subscribe({
+        next: resp => {
+          this.courses = resp.dataSlice.content;
+          this.loading = false;
+        },
+        error: () => {
+          this.courses = [];
+          this.loading = false;
+        }
+      });
+  }
 
-        this.courses = resp.data;
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error fetching courses', err);
-        this.loading = false;
-      }
-    });
+  onFilterChange(e: any) {
+    this.filter = e.detail.value;
+    this.page   = 0;
+    this.load();
+  }
+
+  view(course: CourseDto) {
+    this.nav.navigateForward(`/course-detail/${course.id}`);
   }
 }

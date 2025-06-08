@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';    // ← make sure this is here
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,8 +17,8 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
-    AppRoutingModule,
-    HttpClientModule          // ← and here
+    HttpClientModule,    // ← enables HttpClient throughout your app
+    AppRoutingModule     // ← your lazy‐loaded pages (courses, course‐detail)
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

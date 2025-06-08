@@ -1,38 +1,43 @@
-// src/app/pages/course-detail/course-detail.page.ts
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { CourseService, Course } from '../../services/course.service';
+import { ActivatedRoute }    from '@angular/router';
+import { IonicModule }       from '@ionic/angular';
+import { CommonModule }      from '@angular/common';
+import { CourseService }     from '../../services/course.service';
+import { CourseDto }         from '../../models/models';
 
 @Component({
-  selector: 'app-course-detail',
+  selector:    'app-course-detail',
   templateUrl: './course-detail.page.html',
-  styleUrls: ['./course-detail.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, RouterModule]
+  styleUrls:   ['./course-detail.page.scss'],
+  standalone:  true,
+  imports:     [IonicModule, CommonModule],
 })
 export class CourseDetailPage implements OnInit {
-  course?: Course;
+  course?: CourseDto;
+  loading = true;
 
   constructor(
     private route: ActivatedRoute,
     private courseService: CourseService
   ) {}
 
-  ngOnInit(): void {
-    // Read "id" from the URL and convert to number
+  ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam !== null ? Number(idParam) : NaN;
-
-    // Fetch the course and unwrap resp.data
-    this.courseService.getCourseById(id).subscribe({
-      next: resp => {
-        this.course = resp.data;
-      },
-      error: err => {
-        console.error('Failed to load course', err);
-      }
-    });
+    const id = idParam ? Number(idParam) : undefined;
+    if (id !== undefined && !isNaN(id)) {
+      this.loading = true;
+      this.courseService.getCourseById(id).subscribe({
+        next: (response) => {
+          this.course = response.data;
+          this.loading = false;
+        },
+        error: () => {
+          this.course = undefined;
+          this.loading = false;
+        }
+      });
+    } else {
+      this.loading = false;
+    }
   }
 }

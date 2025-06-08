@@ -6,40 +6,41 @@
 </ion-header>
 
 <ion-content>
-  <!-- 1) Spinner while loading -->
+
+  <!-- 1) Search bar for filtering -->
+  <ion-searchbar
+    [value]="filter"
+    (ionInput)="onFilterChange($event)"
+    placeholder="Search courses">
+  </ion-searchbar>
+
+  <!-- 2) Spinner while loading -->
   <div *ngIf="loading" class="ion-text-center ion-margin-top">
     <ion-spinner name="dots"></ion-spinner>
   </div>
 
-  <!-- 2) Once loading is done -->
-  <ng-container *ngIf="!loading; else loadingBlock">
-
-    <!-- a) If we have any courses, show them -->
-    <ion-list *ngIf="(courses?.length ?? 0) > 0; else noCourses">
+  <!-- 3) Course list once data has loaded -->
+  <ng-container *ngIf="!loading">
+    <ion-list *ngIf="courses && courses.length > 0; else noCourses">
       <ion-item
         *ngFor="let course of courses"
         [routerLink]="['/course-detail', course.id]">
         <ion-label>
-          <h2>{{ course.title }}</h2>
+          <h2>{{ course.code }} — {{ course.title }}</h2>
           <p>
-            <strong>Code:</strong> {{ course.code }}<br>
-            <strong>Year:</strong> {{ course.year }}
+            <strong>Year:</strong> {{ course.year }}<br>
+            <strong>Description:</strong> {{ course.description }}
           </p>
         </ion-label>
       </ion-item>
     </ion-list>
-
   </ng-container>
 
-  <!-- Loading fallback (in case *ngIf="!loading" hides everything) -->
-  <ng-template #loadingBlock>
-    <!-- nothing here—spinner already handles it -->
-  </ng-template>
-
-  <!-- Empty state fallback -->
+  <!-- 4) Empty state -->
   <ng-template #noCourses>
     <div class="ion-text-center ion-margin-top">
-      No courses found.
+      <p>No courses found.</p>
     </div>
   </ng-template>
+
 </ion-content>
