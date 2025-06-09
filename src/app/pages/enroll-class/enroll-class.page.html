@@ -1,0 +1,17 @@
+<header class="page-header">
+  <h1>Enroll in a Class</h1>
+</header>
+
+<main class="page-content">
+  <ul class="course-list">
+    <li *ngFor="let c of courses" class="course-item">
+      <div class="course-info">
+        <h2>{{ c.title }}</h2>
+        <p>{{ c.description }}</p>
+      </div>
+      <button type="button" class="enroll-button" [disabled]="isEnrolled(c)" (click)="enroll(c)">
+        {{ isEnrolled(c) ? 'Enrolled' : 'Enroll' }}
+      </button>
+    </li>
+  </ul>
+</main>

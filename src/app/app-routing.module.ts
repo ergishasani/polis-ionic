@@ -2,8 +2,8 @@
 
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { LoginPage } from './pages/login/login.page'; // ✅ Standalone
-import { ProfilePage } from './pages/profile/profile.page'; // ✅ Add this too
+import { LoginPage } from './pages/login/login.page';
+import { ProfilePage } from './pages/profile/profile.page';
 
 const routes: Routes = [
   {
@@ -32,6 +32,13 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfilePage
+  },
+  {
+    path: 'enroll-class',
+    loadChildren: () =>
+      import('./pages/enroll-class/enroll-class.module').then(
+        m => m.EnrollClassPageModule
+      )
   },
   {
     path: '**',
