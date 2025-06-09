@@ -2,6 +2,7 @@
 
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { LoginPage } from './pages/login/login.page'; // ✅ Import standalone LoginPage
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
       import('./pages/course-detail/course-detail.module').then(
         m => m.CourseDetailPageModule
       )
+  },
+  {
+    path: 'login',
+    component: LoginPage // ✅ Load the standalone LoginPage directly
   },
   {
     path: '**',
