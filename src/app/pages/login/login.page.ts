@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, IonicModule, FormsModule], // ✅ this is required!
+  imports: [CommonModule, IonicModule, FormsModule],
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
@@ -29,7 +29,9 @@ export class LoginPage {
       password: this.password
     }).subscribe({
       next: (res) => {
+        // ✅ Store both role and username
         localStorage.setItem('userRole', res.role);
+        localStorage.setItem('username', this.username); // Needed for profile page
         this.router.navigateByUrl('/home');
       },
       error: () => {

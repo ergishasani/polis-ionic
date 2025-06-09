@@ -2,7 +2,8 @@
 
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { LoginPage } from './pages/login/login.page'; // ✅ Import standalone LoginPage
+import { LoginPage } from './pages/login/login.page'; // ✅ Standalone
+import { ProfilePage } from './pages/profile/profile.page'; // ✅ Add this too
 
 const routes: Routes = [
   {
@@ -26,7 +27,11 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginPage // ✅ Load the standalone LoginPage directly
+    component: LoginPage
+  },
+  {
+    path: 'profile',
+    component: ProfilePage
   },
   {
     path: '**',
